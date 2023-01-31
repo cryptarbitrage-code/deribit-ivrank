@@ -145,7 +145,7 @@ app.layout = html.Div(children=[
     Input('refresh_button', 'n_clicks'),
 )
 def refresh_data(n_clicks):
-    print(n_clicks)
+    print('button presses: ', n_clicks)
 
     candles, iv_rank, iv_percentile = get_data()
 
