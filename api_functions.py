@@ -3,10 +3,10 @@ import requests
 from settings import api_exchange_address
 
 
-def get_volatility_index_data(instrument, start_timestamp, end_timestamp, resolution):
+def get_volatility_index_data(currency, start_timestamp, end_timestamp, resolution):
     url = "/api/v2/public/get_volatility_index_data"
     parameters = {
-        'instrument_name': instrument,
+        'currency': currency,
         'start_timestamp': start_timestamp,
         'end_timestamp': end_timestamp,
         'resolution': resolution,
