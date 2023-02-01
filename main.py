@@ -14,11 +14,10 @@ now = datetime.now()
 end_timestamp = round(datetime.timestamp(now) * 1000)
 year_milliseconds = 1000 * 60 * 60 * 24 * 365
 start_timestamp = end_timestamp - year_milliseconds
-currency = "BTC"
 resolution = 43200  # resolution of vol data in seconds, e.g. 1 hour = 3600
 
 
-def get_data():
+def get_data(currency='BTC'):
     # fetch the DVOL data from the api
     raw_data = get_volatility_index_data(currency, start_timestamp, end_timestamp, resolution)
 
@@ -66,14 +65,23 @@ app = dash.Dash(title="IV Rank", external_stylesheets=[dbc.themes.DARKLY])
 app.layout = html.Div(children=[
     # refresh button
     dbc.Row([
-        html.Div([
+        dbc.Col([
             dbc.Button(
                 html.B("Refresh"),
                 color="info",
                 id="refresh_button",
                 className="mb-3",
+                style={'width': '100px'}
             ),
-        ])
+        ], width=1),
+        dbc.Col([
+            dcc.Dropdown(
+                id='currency_dropdown',
+                options=['BTC', 'ETH'],
+                value='BTC',
+                style={'width': '100px', 'background-color': '#ffffff', 'color': '#000000', 'margin-bottom': '1rem'},
+            ),
+        ], width=1)
     ], style={'margin': 'auto', 'margin-top': '1rem'}),
     # the DVOL Chart
     dbc.Row([
@@ -143,11 +151,12 @@ app.layout = html.Div(children=[
         Output('iv_percentile_gauge', 'value'),
     ],
     Input('refresh_button', 'n_clicks'),
+    Input('currency_dropdown', 'value')
 )
-def refresh_data(n_clicks):
+def refresh_data(n_clicks, currency):
     print('button presses: ', n_clicks)
 
-    candles, iv_rank, iv_percentile = get_data()
+    candles, iv_rank, iv_percentile = get_data(currency)
 
     return candles, iv_rank, iv_percentile
 
@@ -155,3 +164,6 @@ def refresh_data(n_clicks):
 # run local server
 if __name__ == '__main__':
     app.run_server(debug=True)
+
+
+# add ability to switch currencies
