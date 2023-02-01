@@ -164,6 +164,3 @@ def refresh_data(n_clicks, currency):
 # run local server
 if __name__ == '__main__':
     app.run_server(debug=True)
-
-
-# add ability to switch currencies
