@@ -95,13 +95,13 @@ app.layout = html.Div(children=[
         dbc.Col([
             dbc.Label(
                 id='1y_high_value',
-                children='1Y High:',
+                children='High:',
             ),
         ], width=1),
         dbc.Col([
             dbc.Label(
                 id='1y_low_value',
-                children='1Y Low:',
+                children='Low:',
             ),
         ], width=1),
     ], style={'margin': 'auto', 'margin-top': '1rem'}),
