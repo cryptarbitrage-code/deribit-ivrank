@@ -53,10 +53,14 @@ def get_data(currency='BTC'):
     periods_lower = len(df[(df['close'] <= current_vol)])
     iv_percentile = (periods_lower / total_periods) * 100
 
-    return candles, iv_rank, iv_percentile
+    print('current vol:', current_vol)
+    print('IVR, min, max:', iv_rank, year_min, year_max)
+    print('IVP, total periods, periods lower:', iv_percentile, total_periods, periods_lower)
+
+    return candles, iv_rank, iv_percentile, current_vol, year_min, year_max
 
 
-candles, iv_rank, iv_percentile = get_data()
+candles, iv_rank, iv_percentile, current_vol, year_min, year_max = get_data()
 
 # create dash app
 app = dash.Dash(title="IV Rank", external_stylesheets=[dbc.themes.DARKLY])
@@ -81,7 +85,25 @@ app.layout = html.Div(children=[
                 value='BTC',
                 style={'width': '100px', 'background-color': '#ffffff', 'color': '#000000', 'margin-bottom': '1rem'},
             ),
-        ], width=1)
+        ], width=1),
+        dbc.Col([
+            dbc.Label(
+                id='dvol_value',
+                children='DVOL:',
+            ),
+        ], width=1),
+        dbc.Col([
+            dbc.Label(
+                id='1y_high_value',
+                children='1Y High:',
+            ),
+        ], width=1),
+        dbc.Col([
+            dbc.Label(
+                id='1y_low_value',
+                children='1Y Low:',
+            ),
+        ], width=1),
     ], style={'margin': 'auto', 'margin-top': '1rem'}),
     # the DVOL Chart
     dbc.Row([
@@ -149,6 +171,9 @@ app.layout = html.Div(children=[
         Output('dvol_candles', 'figure'),
         Output('iv_rank_gauge', 'value'),
         Output('iv_percentile_gauge', 'value'),
+        Output('dvol_value', 'children'),
+        Output('1y_high_value', 'children'),
+        Output('1y_low_value', 'children'),
     ],
     Input('refresh_button', 'n_clicks'),
     Input('currency_dropdown', 'value')
@@ -156,9 +181,13 @@ app.layout = html.Div(children=[
 def refresh_data(n_clicks, currency):
     print('button presses: ', n_clicks)
 
-    candles, iv_rank, iv_percentile = get_data(currency)
+    candles, iv_rank, iv_percentile, current_vol, year_min, year_max = get_data(currency)
 
-    return candles, iv_rank, iv_percentile
+    dvol_value = f'DVOL: {current_vol}'
+    year_high = f'High: {year_max}'
+    year_low = f'Low: {year_min}'
+
+    return candles, iv_rank, iv_percentile, dvol_value, year_high, year_low
 
 
 # run local server
